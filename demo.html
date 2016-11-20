@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Form Checker Demo</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    html {
+        font-size: 18px;
+    }
+    
+    .g-body {
+        margin: 3rem;
+    }
+    
+    .red {
+        color: #c00;
+    }
+    
+    .title {
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        font-weight: 900;
+    }
+    
+    .form {}
+    
+    .form .line {
+        margin-bottom: 1rem;
+    }
+    
+    .form .col {
+        display: inline-block;
+        margin-right: 1rem;
+        width: 7rem;
+        text-align: right;
+    }
+    
+    .form .input {
+        width: 10rem;
+        height: 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .form .textarea {
+        width: 20rem;
+        height: 6rem;
+        font-size: 1rem;
+        vertical-align: top;
+        resize: none;
+    }
+    
+    .form .list {
+        display: inline-block;
+        width: 10rem;
+        list-style: none;
+        vertical-align: top;
+    }
+    
+    .form .list li {
+        margin-bottom: .8rem;
+    }
+    
+    .form .tips {
+        height: 1rem;
+        line-height: 1rem;
+        color: #c00;
+    }
+    
+    .form .submit {
+        padding: .2rem .6rem;
+        font-size: 1.2rem;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="g-body">
+        <h1 class="title">Form Checker Demo</h1>
+        <form action="#" class="form" id="J_Form">
+            <div class="line">
+                <span class="col"><span class="red">*</span>name:</span>
+                <input type="text" name="name" class="input">
+            </div>
+            <div class="line">
+                <span class="col">age:</span>
+                <input type="text" name="age" class="input">
+            </div>
+            <div class="line">
+                <span class="col"><span class="red">*</span>sex:</span>
+                <select class="input" name="sex">
+                    <option value="1">male</option>
+                    <option value="2">female</option>
+                    <option value="0">other</option>
+                </select>
+            </div>
+            <div class="line">
+                <span class="col"><span class="red">*</span>Good At:</span>
+                <ul class="list">
+                    <li>
+                        <input type="radio" name="tech" value="1" id="J_R_Web">&nbsp;
+                        <label for="J_R_Web">web</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="tech" value="2" id="J_R_iOS">&nbsp;
+                        <label for="J_R_iOS">iOS</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="tech" value="3" id="J_R_Android">&nbsp;
+                        <label for="J_R_Android">Android</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="line">
+                <span class="col"><span class="red">*</span>Language:</span>
+                <ul class="list">
+                    <li>
+                        <input type="checkbox" name="lan" value="1" id="J_R_C">&nbsp;
+                        <label for="J_R_C">C++</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" name="lan" value="2" id="J_R_CS">&nbsp;
+                        <label for="J_R_CS">C#</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" name="lan" value="3" id="J_R_Java">&nbsp;
+                        <label for="J_R_Java">Java</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="line">
+                <span class="col"><span class="red">*</span>introduction:</span>
+                <textarea name="intro" class=textarea></textarea>
+            </div>
+            <div class="line">
+                <p class="tips" id="J_Tips"></p>
+            </div>
+            <div class="line">
+                <span class="col"></span>
+                <button type="submit" class="submit">submit</button>
+            </div>
+        </form>
+    </div>
+    <script src="build/form-checker.min.js"></script>
+    <script>
+    'use strict';
+    var rules = {
+        name: {
+            isRequire: true,
+            minLength: 3,
+            maxLength: 10,
+            exp: /^[A-Za-z]+$/
+        },
+        age: {
+            minLength: 1,
+            maxLength: 2,
+            exp: /^[\d]+$/,
+            checker: function(value) {
+                return value >= 18 && value <= 65;
+            }
+        },
+        sex: {
+            isRequire: true
+        },
+        tech: {
+            isRequire: true
+        },
+        lan: {
+            isRequire: true
+        },
+        intro: {
+            isRequire: true,
+            minLength: 10,
+            exp: /^[A-Za-z\d\., ]+$/
+        }
+    };
+
+    var form = new FormChecker('#J_Form', rules);
+    var $tips = document.querySelector('#J_Tips');
+
+    var checkHandler = function(checker, checkAll) {
+        console.warn('checker:', checker);
+        if (checker.$valid) {
+            $tips.innerText = '';
+        } else {
+            var msg = '';
+            if (checker.name.$modify && !checker.name.$valid) {
+                msg = 'NAME: ';
+                checker.name.minLength || (msg += 'too Short. ');
+                checker.name.maxLength || (msg += 'too Looooong. ');
+                checker.name.exp || (msg += 'Format is not valid.');
+            } else if (checker.age.$modify && !checker.age.$valid) {
+                msg = 'AGE: ';
+                checker.age.minLength || (msg += 'too Short. ');
+                checker.age.maxLength || (msg += 'too Looooong. ');
+                checker.age.exp || (msg += 'Format is not valid.');
+                checker.age.checker || (msg += 'range between 18 to 65.');
+            } else if (checker.sex.$modify && !checker.sex.$valid) {
+                msg = 'SEX: Must selected.';
+            } else if (checker.tech.$modify && !checker.tech.$valid) {
+                msg = 'Good At: Must selected.';
+            } else if (checker.lan.$modify && !checker.lan.$valid) {
+                msg = 'Language: Must selected one at least.';
+            } else if (checker.intro.$modify && !checker.intro.$valid) {
+                msg = 'INTRODUCTION: ';
+                checker.intro.minLength || (msg += 'too Short. ');
+                checker.intro.exp || (msg += 'Format is not valid.');
+            } else {
+                msg = '* Must be Write.'
+            }
+            $tips.innerText = msg;
+        }
+    };
+
+    form.listener(checkHandler).init();
+
+    document.querySelector('#J_Form').addEventListener('submit', function(e) {
+        if (form.$checker.$valid) {
+            alert('submit data:' + JSON.stringify(form.$dataJSON));
+        } else {
+            e.preventDefault();
+            checkHandler(form.$checker);
+        }
+    }, false);
+    </script>
+</body>
+
+</html>
