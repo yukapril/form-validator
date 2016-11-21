@@ -31,7 +31,7 @@ key值为form中name值，value为校验对象。
 
 校验对象属性：
 
-* `isRequire` 是否必输
+* `isRequire` 是否必输（默认`false`）
 
 * `minLength` 最小长度（仅适用于input[text],input[password]和textarea）
 
