@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>FormChecker</title>
+</head>
+<body>
+<div>
+    <form id="J_Form">
+        <input type="text" name="username" value=""><br/>
+        <input type="text" id="J_Age"><br/>
+        <input type="password" name="pw"><br/>
+        <textarea name="desc"></textarea><br/>
+    </form>
+</div>
+
+<script src="./dist/form-validator.min.js"></script>
+<script>
+    var rules = [
+        {
+            name: 'username',
+            isRequired: true,
+            minLength: 2,
+            maxLength: 10,
+            rep: /[a-z]+/,
+            fn: v => v !== 'abc'
+        }
+    ]
+
+    var form = new FormValidator('#J_Form', rules)
+    form.addElement('#J_Age', 'age')
+
+    form.on('username', function (validator, e) {
+        console.log('监听username：', validator, e)
+    })
+
+    form.on(function (validator, e) {
+        console.log('监听所有元素[懒监听]：', validator, e)
+    }, true)
+
+    form.interceptor('username', function (e) {
+        // 拦截数字输入
+        if (e.which >= 48 && e.which < 57) {
+            return false
+        }
+        return true
+    })
+
+    form.forceValidate()
+
+    console.log(form)
+
+</script>
+</body>
+</html>

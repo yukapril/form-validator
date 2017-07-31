@@ -1,32 +1,27 @@
-var path = require('path');
-var webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
     entry: './src/index.js',
     output: {
-        path: __dirname + '/build',
-        filename: 'form-checker.min.js'
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'form-validator.min.js',
+        libraryTarget: 'umd',
+        library: 'FormValidator',
     },
     module: {
-        loaders: [{
-            loader: 'babel-loader',
-            test: path.join(__dirname, 'src'),
-            query: {
-                presets: 'es2015'
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                options: {
+                    presets: ['es2015']
+                }
             }
-        }]
+        ]
     },
     plugins: [
-        new webpack.NoErrorsPlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: true
-            }
-        })
-
-    ],
-    stats: {
-        colors: true
-    },
-    devtool: 'source-map'
-};
+        new UglifyJSPlugin()
+    ]
+}
