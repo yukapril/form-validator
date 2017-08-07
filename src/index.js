@@ -55,6 +55,7 @@ const bindEvent = (element, type, callback) => {
  */
 const interceptorEvent = (element, callback) => {
   element.onkeypress = (e) => {
+    e = e || window.event
     return callback.call(e.target, e)
   }
 }

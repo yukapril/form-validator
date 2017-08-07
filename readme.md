@@ -54,10 +54,13 @@ form.on('username', (validator)=>{
 </script>
 ```
 
-
 ## html 支持属性
 
 不支持 HTML5 原生表单验证方法（`required` 等）。
+
+## 兼容说明
+
+如需兼容IE8，需要打补丁。如 [shim 和 sham](https://github.com/es-shims/es5-shim) 。
 
 ## API
 
